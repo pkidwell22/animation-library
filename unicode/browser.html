@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unicode Spinner Browser</title>
+<style>
+  :root {
+    --bg: #1a1a1a;
+    --panel: #242424;
+    --border: #333;
+    --text: #d4d4d4;
+    --muted: #777;
+    --accent: #5b9dd9;
+    --hermes-think: #c586c0;
+    --hermes-tool: #569cd6;
+    --hover: #2a2a2a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+    padding: 24px;
+  }
+  h1 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .sub {
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
+  .controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .controls input[type="text"] {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 10px;
+    border-radius: 3px;
+    font-size: 13px;
+    width: 200px;
+    outline: none;
+  }
+  .controls input:focus { border-color: var(--accent); }
+  .controls select {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 10px;
+    border-radius: 3px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .controls label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .card {
+    background: var(--panel);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: background 0.1s;
+  }
+  .card:hover { background: var(--hover); }
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-name {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .card-badges {
+    display: flex;
+    gap: 4px;
+  }
+  .badge {
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  .badge-think { background: rgba(197,134,192,0.2); color: var(--hermes-think); }
+  .badge-tool { background: rgba(86,156,214,0.2); color: var(--hermes-tool); }
+  .spinner-display {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 28px;
+    line-height: 1;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1a1a1a;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 8px;
+    color: var(--accent);
+  }
+  .card-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .preview-line {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    color: var(--text);
+    min-height: 18px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .preview-line .spinner-inline {
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+  <h1>Unicode Spinner Browser</h1>
+  <div class="sub">18 braille-based spinner animations from <a href="https://github.com/gunnargray-dev/unicode-animations" style="color:var(--accent)">unicode-animations</a> — the same library Hermes desktop uses</div>
+
+  <div class="controls">
+    <input type="text" id="search" placeholder="Filter by name..." autocomplete="off">
+    <select id="filter">
+      <option value="all">All spinners</option>
+      <option value="think">Hermes: thinking</option>
+      <option value="tool">Hermes: tool execution</option>
+      <option value="other">Other</option>
+    </select>
+    <label><input type="checkbox" id="showPreview" checked> Inline preview</label>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+<script>
+const SPINNERS = {
+  "braille": { frames: ["\u280b", "\u2819", "\u2839", "\u2838", "\u283c", "\u2834", "\u2826", "\u2827", "\u2807", "\u280f"], interval: 80 },
+  "braillewave": { frames: ["\u2801\u2802\u2804\u2840", "\u2802\u2804\u2840\u2880", "\u2804\u2840\u2880\u2820", "\u2840\u2880\u2820\u2810", "\u2880\u2820\u2810\u2808", "\u2820\u2810\u2808\u2801", "\u2810\u2808\u2801\u2802", "\u2808\u2801\u2802\u2804"], interval: 100 },
+  "dna": { frames: ["\u280b\u2809\u2819\u281a", "\u2809\u2819\u281a\u2812", "\u2819\u281a\u2812\u2802", "\u281a\u2812\u2802\u2802", "\u2812\u2802\u2802\u2812", "\u2802\u2802\u2812\u2832", "\u2802\u2812\u2832\u2834", "\u2812\u2832\u2834\u2824", "\u2832\u2834\u2824\u2804", "\u2834\u2824\u2804\u280b", "\u2824\u2804\u280b\u2809", "\u2804\u280b\u2809\u2819"], interval: 80 },
+  "scan": { frames: ["\u2800\u2800\u2800\u2800", "\u2847\u2800\u2800\u2800", "\u28ff\u2800\u2800\u2800", "\u28b8\u2847\u2800\u2800", "\u2800\u28ff\u2800\u2800", "\u2800\u28b8\u2847\u2800", "\u2800\u2800\u28ff\u2800", "\u2800\u2800\u28b8\u2847", "\u2800\u2800\u2800\u28ff", "\u2800\u2800\u2800\u28b8"], interval: 70 },
+  "rain": { frames: ["\u2881\u2802\u2814\u2808", "\u2802\u280c\u2860\u2810", "\u2804\u2850\u2880\u2821", "\u2848\u2820\u2800\u2882", "\u2810\u2880\u2801\u2804", "\u2820\u2801\u280a\u2840", "\u2881\u2802\u2814\u2808", "\u2802\u280c\u2860\u2810", "\u2804\u2850\u2880\u2821", "\u2848\u2820\u2800\u2882", "\u2810\u2880\u2801\u2804", "\u2820\u2801\u280a\u2840"], interval: 100 },
+  "scanline": { frames: ["\u2809\u2809\u2809", "\u2813\u2813\u2813", "\u2826\u2826\u2826", "\u28c4\u28c4\u28c4", "\u2826\u2826\u2826", "\u2813\u2813\u2813"], interval: 120 },
+  "pulse": { frames: ["\u2800\u2836\u2800", "\u2830\u28ff\u2806", "\u28be\u28c9\u2877", "\u28cf\u2800\u28f9", "\u2841\u2800\u2888"], interval: 180 },
+  "snake": { frames: ["\u28c1\u2840", "\u28c9\u2800", "\u2849\u2801", "\u2809\u2809", "\u2808\u2819", "\u2800\u281b", "\u2810\u281a", "\u2812\u2812", "\u2816\u2802", "\u2836\u2800", "\u2826\u2804", "\u2824\u2824", "\u2820\u28a4", "\u2800\u28e4", "\u2880\u28e0", "\u28c0\u28c0"], interval: 80 },
+  "sparkle": { frames: ["\u2861\u280a\u2894\u2821", "\u280a\u2870\u2861\u2858", "\u2894\u2885\u2808\u28a2", "\u2841\u2882\u2806\u284d", "\u2894\u2828\u2891\u2890", "\u2828\u2851\u2860\u280a"], interval: 150 },
+  "cascade": { frames: ["\u2800\u2800\u2800\u2800", "\u2800\u2800\u2800\u2800", "\u2801\u2800\u2800\u2800", "\u280b\u2800\u2800\u2800", "\u281e\u2801\u2800\u2800", "\u2874\u280b\u2800\u2800", "\u28e0\u281e\u2801\u2800", "\u2880\u2874\u280b\u2800", "\u2800\u28e0\u281e\u2801", "\u2800\u2880\u2874\u280b", "\u2800\u2800\u28e0\u281e", "\u2800\u2800\u2880\u2874", "\u2800\u2800\u2800\u28e0", "\u2800\u2800\u2800\u2880"], interval: 60 },
+  "columns": { frames: ["\u2840\u2800\u2800", "\u2844\u2800\u2800", "\u2846\u2800\u2800", "\u2847\u2800\u2800", "\u28c7\u2800\u2800", "\u28e7\u2800\u2800", "\u28f7\u2800\u2800", "\u28ff\u2800\u2800", "\u28ff\u2840\u2800", "\u28ff\u2844\u2800", "\u28ff\u2846\u2800", "\u28ff\u2847\u2800", "\u28ff\u28c7\u2800", "\u28ff\u28e7\u2800", "\u28ff\u28f7\u2800", "\u28ff\u28ff\u2800", "\u28ff\u28ff\u2840", "\u28ff\u28ff\u2844", "\u28ff\u28ff\u2846", "\u28ff\u28ff\u2847", "\u28ff\u28ff\u28c7", "\u28ff\u28ff\u28e7", "\u28ff\u28ff\u28f7", "\u28ff\u28ff\u28ff", "\u28ff\u28ff\u28ff", "\u2800\u2800\u2800"], interval: 60 },
+  "orbit": { frames: ["\u2803", "\u2809", "\u2818", "\u2830", "\u28a0", "\u28c0", "\u2844", "\u2806"], interval: 100 },
+  "breathe": { frames: ["\u2800", "\u2802", "\u280c", "\u2851", "\u2895", "\u289d", "\u28eb", "\u28df", "\u28ff", "\u28df", "\u28eb", "\u289d", "\u2895", "\u2851", "\u280c", "\u2802", "\u2800"], interval: 100 },
+  "waverows": { frames: ["\u2816\u2809\u2809\u2811", "\u2860\u2816\u2809\u2809", "\u28e0\u2860\u2816\u2809", "\u28c4\u28e0\u2860\u2816", "\u2822\u28c4\u28e0\u2860", "\u2819\u2822\u28c4\u28e0", "\u2809\u2819\u2822\u28c4", "\u280a\u2809\u2819\u2822", "\u281c\u280a\u2809\u2819", "\u2864\u281c\u280a\u2809", "\u28c0\u2864\u281c\u280a", "\u28a4\u28c0\u2864\u281c", "\u2823\u28a4\u28c0\u2864", "\u2811\u2823\u28a4\u28c0", "\u2809\u2811\u2823\u28a4", "\u280b\u2809\u2811\u2823"], interval: 90 },
+  "checkerboard": { frames: ["\u2895\u2895\u2895", "\u286a\u286a\u286a", "\u288a\u2814\u2861", "\u2861\u288a\u2814"], interval: 250 },
+  "helix": { frames: ["\u288c\u28c9\u288e\u28c9", "\u28c9\u2871\u28c9\u2871", "\u28c9\u288e\u28c9\u288e", "\u2871\u28c9\u2871\u28c9", "\u288e\u28c9\u288e\u28c9", "\u28c9\u2871\u28c9\u2871", "\u28c9\u288e\u28c9\u288e", "\u2871\u28c9\u2871\u28c9", "\u288e\u28c9\u288e\u28c9", "\u28c9\u2871\u28c9\u2871", "\u28c9\u288e\u28c9\u288e", "\u2871\u28c9\u2871\u28c9", "\u288e\u28c9\u288e\u28c9", "\u28c9\u2871\u28c9\u2871", "\u28c9\u288e\u28c9\u288e", "\u2871\u28c9\u2871\u28c9"], interval: 80 },
+  "fillsweep": { frames: ["\u28c0\u28c0", "\u28e4\u28e4", "\u28f6\u28f6", "\u28ff\u28ff", "\u28ff\u28ff", "\u28ff\u28ff", "\u28f6\u28f6", "\u28e4\u28e4", "\u28c0\u28c0", "\u2800\u2800", "\u2800\u2800"], interval: 100 },
+  "diagswipe": { frames: ["\u2801\u2800", "\u280b\u2800", "\u281f\u2801", "\u287f\u280b", "\u28ff\u281f", "\u28ff\u287f", "\u28ff\u28ff", "\u28ff\u28ff", "\u28fe\u28ff", "\u28f4\u28ff", "\u28e0\u28fe", "\u2880\u28f4", "\u2800\u28e0", "\u2800\u2880", "\u2800\u2800", "\u2800\u2800"], interval: 60 }
+};
+
+const HERMES_THINK = ["helix", "breathe", "orbit", "dna", "waverows", "snake", "pulse"];
+const HERMES_TOOL = ["cascade", "scan", "diagswipe", "fillsweep", "rain", "columns", "sparkle"];
+
+function getCategory(name) {
+  if (HERMES_THINK.includes(name)) return 'think';
+  if (HERMES_TOOL.includes(name)) return 'tool';
+  return 'other';
+}
+
+function buildCards() {
+  const grid = document.getElementById('grid');
+  const search = document.getElementById('search').value.toLowerCase();
+  const filter = document.getElementById('filter').value;
+  const showPreview = document.getElementById('showPreview').checked;
+
+  grid.innerHTML = '';
+  const entries = Object.entries(SPINNERS).filter(([name]) => {
+    if (!name.includes(search)) return false;
+    if (filter === 'all') return true;
+    return getCategory(name) === filter;
+  });
+
+  for (const [name, info] of entries) {
+    const cat = getCategory(name);
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    let badges = '';
+    if (cat === 'think') badges = '<span class="badge badge-think">thinking</span>';
+    else if (cat === 'tool') badges = '<span class="badge badge-tool">tool</span>';
+
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="card-name">${name}</span>
+        <div class="card-badges">${badges}</div>
+      </div>
+      <div class="spinner-display" data-spinner="${name}"></div>
+      <div class="card-meta">
+        <span>${info.frames.length} frames</span>
+        <span>${info.interval}ms</span>
+      </div>
+      ${showPreview ? `<div class="preview-line" data-preview="${name}"><span class="spinner-inline"></span> Generating assets...</div>` : ''}
+    `;
+
+    grid.appendChild(card);
+  }
+
+  // Start animation loops
+  for (const [name, info] of entries) {
+    const display = grid.querySelector(`[data-spinner="${name}"]`);
+    const preview = grid.querySelector(`[data-preview="${name}"] .spinner-inline`);
+
+    let frame = 0;
+    setInterval(() => {
+      const f = info.frames[frame % info.frames.length];
+      if (display) display.textContent = f;
+      if (preview) preview.textContent = f;
+      frame++;
+    }, info.interval);
+  }
+}
+
+document.getElementById('search').addEventListener('input', buildCards);
+document.getElementById('filter').addEventListener('change', buildCards);
+document.getElementById('showPreview').addEventListener('change', buildCards);
+buildCards();
+</script>
+</body>
+</html>
