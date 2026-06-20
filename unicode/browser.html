@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Unicode Spinner Browser</title>
+<title>Animation Library Browser</title>
 <style>
   :root {
     --bg: #1a1a1a;
@@ -25,21 +25,41 @@
     min-height: 100vh;
     padding: 24px;
   }
-  h1 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-  .sub {
-    color: var(--muted);
-    font-size: 12px;
+  h1 { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+  .sub { color: var(--muted); font-size: 12px; margin-bottom: 20px; }
+  .sub a { color: var(--accent); }
+  .tabs {
+    display: flex;
+    gap: 0;
     margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab {
+    padding: 8px 16px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+    transition: color 0.1s, border-color 0.1s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--text); border-bottom-color: var(--accent); }
+  .tab-count {
+    font-size: 10px;
+    background: var(--border);
+    padding: 1px 5px;
+    border-radius: 8px;
+    margin-left: 6px;
   }
   .controls {
     display: flex;
     gap: 12px;
     margin-bottom: 20px;
     flex-wrap: wrap;
+    align-items: center;
   }
   .controls input[type="text"] {
     background: var(--panel);
@@ -85,20 +105,9 @@
     transition: background 0.1s;
   }
   .card:hover { background: var(--hover); }
-  .card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .card-name {
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 13px;
-    font-weight: 600;
-  }
-  .card-badges {
-    display: flex;
-    gap: 4px;
-  }
+  .card-header { display: flex; align-items: center; justify-content: space-between; }
+  .card-name { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; font-weight: 600; }
+  .card-badges { display: flex; gap: 4px; }
   .badge {
     font-size: 9px;
     padding: 2px 6px;
@@ -109,11 +118,12 @@
   }
   .badge-think { background: rgba(197,134,192,0.2); color: var(--hermes-think); }
   .badge-tool { background: rgba(86,156,214,0.2); color: var(--hermes-tool); }
+  .badge-native { background: rgba(181,206,168,0.2); color: #b5cea8; }
   .spinner-display {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 28px;
     line-height: 1;
-    min-height: 36px;
+    min-height: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -139,21 +149,30 @@
     align-items: center;
     gap: 6px;
   }
-  .preview-line .spinner-inline {
-    color: var(--accent);
-  }
+  .preview-line .spinner-inline { color: var(--accent); }
+  .hidden { display: none !important; }
 </style>
 </head>
 <body>
-  <h1>Unicode Spinner Browser</h1>
-  <div class="sub">18 braille-based spinner animations from <a href="https://github.com/gunnargray-dev/unicode-animations" style="color:var(--accent)">unicode-animations</a> — the same library Hermes desktop uses</div>
+  <h1>Animation Library Browser</h1>
+  <div class="sub">
+    <span id="totalCount"></span> animations across unicode spinners and native SwiftUI loaders.
+    <a href="https://github.com/pkidwell22/animation-library" style="color:var(--accent)">View repo →</a>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="unicode">Unicode Spinners <span class="tab-count">18</span></button>
+    <button class="tab" data-tab="native">Native Loaders <span class="tab-count">9</span></button>
+    <button class="tab" data-tab="all">All <span class="tab-count">27</span></button>
+  </div>
 
   <div class="controls">
     <input type="text" id="search" placeholder="Filter by name..." autocomplete="off">
     <select id="filter">
-      <option value="all">All spinners</option>
+      <option value="all">All categories</option>
       <option value="think">Hermes: thinking</option>
-      <option value="tool">Hermes: tool execution</option>
+      <option value="tool">Hermes: tool</option>
+      <option value="native">Native</option>
       <option value="other">Other</option>
     </select>
     <label><input type="checkbox" id="showPreview" checked> Inline preview</label>
@@ -161,94 +180,204 @@
 
   <div class="grid" id="grid"></div>
 
+<!-- Dynamic CSS injection container -->
+<style id="dynamicCss"></style>
+
 <script>
 const SPINNERS = {
-  "braille": { frames: ["\u280b", "\u2819", "\u2839", "\u2838", "\u283c", "\u2834", "\u2826", "\u2827", "\u2807", "\u280f"], interval: 80 },
-  "braillewave": { frames: ["\u2801\u2802\u2804\u2840", "\u2802\u2804\u2840\u2880", "\u2804\u2840\u2880\u2820", "\u2840\u2880\u2820\u2810", "\u2880\u2820\u2810\u2808", "\u2820\u2810\u2808\u2801", "\u2810\u2808\u2801\u2802", "\u2808\u2801\u2802\u2804"], interval: 100 },
-  "dna": { frames: ["\u280b\u2809\u2819\u281a", "\u2809\u2819\u281a\u2812", "\u2819\u281a\u2812\u2802", "\u281a\u2812\u2802\u2802", "\u2812\u2802\u2802\u2812", "\u2802\u2802\u2812\u2832", "\u2802\u2812\u2832\u2834", "\u2812\u2832\u2834\u2824", "\u2832\u2834\u2824\u2804", "\u2834\u2824\u2804\u280b", "\u2824\u2804\u280b\u2809", "\u2804\u280b\u2809\u2819"], interval: 80 },
-  "scan": { frames: ["\u2800\u2800\u2800\u2800", "\u2847\u2800\u2800\u2800", "\u28ff\u2800\u2800\u2800", "\u28b8\u2847\u2800\u2800", "\u2800\u28ff\u2800\u2800", "\u2800\u28b8\u2847\u2800", "\u2800\u2800\u28ff\u2800", "\u2800\u2800\u28b8\u2847", "\u2800\u2800\u2800\u28ff", "\u2800\u2800\u2800\u28b8"], interval: 70 },
-  "rain": { frames: ["\u2881\u2802\u2814\u2808", "\u2802\u280c\u2860\u2810", "\u2804\u2850\u2880\u2821", "\u2848\u2820\u2800\u2882", "\u2810\u2880\u2801\u2804", "\u2820\u2801\u280a\u2840", "\u2881\u2802\u2814\u2808", "\u2802\u280c\u2860\u2810", "\u2804\u2850\u2880\u2821", "\u2848\u2820\u2800\u2882", "\u2810\u2880\u2801\u2804", "\u2820\u2801\u280a\u2840"], interval: 100 },
-  "scanline": { frames: ["\u2809\u2809\u2809", "\u2813\u2813\u2813", "\u2826\u2826\u2826", "\u28c4\u28c4\u28c4", "\u2826\u2826\u2826", "\u2813\u2813\u2813"], interval: 120 },
-  "pulse": { frames: ["\u2800\u2836\u2800", "\u2830\u28ff\u2806", "\u28be\u28c9\u2877", "\u28cf\u2800\u28f9", "\u2841\u2800\u2888"], interval: 180 },
-  "snake": { frames: ["\u28c1\u2840", "\u28c9\u2800", "\u2849\u2801", "\u2809\u2809", "\u2808\u2819", "\u2800\u281b", "\u2810\u281a", "\u2812\u2812", "\u2816\u2802", "\u2836\u2800", "\u2826\u2804", "\u2824\u2824", "\u2820\u28a4", "\u2800\u28e4", "\u2880\u28e0", "\u28c0\u28c0"], interval: 80 },
-  "sparkle": { frames: ["\u2861\u280a\u2894\u2821", "\u280a\u2870\u2861\u2858", "\u2894\u2885\u2808\u28a2", "\u2841\u2882\u2806\u284d", "\u2894\u2828\u2891\u2890", "\u2828\u2851\u2860\u280a"], interval: 150 },
-  "cascade": { frames: ["\u2800\u2800\u2800\u2800", "\u2800\u2800\u2800\u2800", "\u2801\u2800\u2800\u2800", "\u280b\u2800\u2800\u2800", "\u281e\u2801\u2800\u2800", "\u2874\u280b\u2800\u2800", "\u28e0\u281e\u2801\u2800", "\u2880\u2874\u280b\u2800", "\u2800\u28e0\u281e\u2801", "\u2800\u2880\u2874\u280b", "\u2800\u2800\u28e0\u281e", "\u2800\u2800\u2880\u2874", "\u2800\u2800\u2800\u28e0", "\u2800\u2800\u2800\u2880"], interval: 60 },
-  "columns": { frames: ["\u2840\u2800\u2800", "\u2844\u2800\u2800", "\u2846\u2800\u2800", "\u2847\u2800\u2800", "\u28c7\u2800\u2800", "\u28e7\u2800\u2800", "\u28f7\u2800\u2800", "\u28ff\u2800\u2800", "\u28ff\u2840\u2800", "\u28ff\u2844\u2800", "\u28ff\u2846\u2800", "\u28ff\u2847\u2800", "\u28ff\u28c7\u2800", "\u28ff\u28e7\u2800", "\u28ff\u28f7\u2800", "\u28ff\u28ff\u2800", "\u28ff\u28ff\u2840", "\u28ff\u28ff\u2844", "\u28ff\u28ff\u2846", "\u28ff\u28ff\u2847", "\u28ff\u28ff\u28c7", "\u28ff\u28ff\u28e7", "\u28ff\u28ff\u28f7", "\u28ff\u28ff\u28ff", "\u28ff\u28ff\u28ff", "\u2800\u2800\u2800"], interval: 60 },
-  "orbit": { frames: ["\u2803", "\u2809", "\u2818", "\u2830", "\u28a0", "\u28c0", "\u2844", "\u2806"], interval: 100 },
-  "breathe": { frames: ["\u2800", "\u2802", "\u280c", "\u2851", "\u2895", "\u289d", "\u28eb", "\u28df", "\u28ff", "\u28df", "\u28eb", "\u289d", "\u2895", "\u2851", "\u280c", "\u2802", "\u2800"], interval: 100 },
-  "waverows": { frames: ["\u2816\u2809\u2809\u2811", "\u2860\u2816\u2809\u2809", "\u28e0\u2860\u2816\u2809", "\u28c4\u28e0\u2860\u2816", "\u2822\u28c4\u28e0\u2860", "\u2819\u2822\u28c4\u28e0", "\u2809\u2819\u2822\u28c4", "\u280a\u2809\u2819\u2822", "\u281c\u280a\u2809\u2819", "\u2864\u281c\u280a\u2809", "\u28c0\u2864\u281c\u280a", "\u28a4\u28c0\u2864\u281c", "\u2823\u28a4\u28c0\u2864", "\u2811\u2823\u28a4\u28c0", "\u2809\u2811\u2823\u28a4", "\u280b\u2809\u2811\u2823"], interval: 90 },
-  "checkerboard": { frames: ["\u2895\u2895\u2895", "\u286a\u286a\u286a", "\u288a\u2814\u2861", "\u2861\u288a\u2814"], interval: 250 },
-  "helix": { frames: ["\u288c\u28c9\u288e\u28c9", "\u28c9\u2871\u28c9\u2871", "\u28c9\u288e\u28c9\u288e", "\u2871\u28c9\u2871\u28c9", "\u288e\u28c9\u288e\u28c9", "\u28c9\u2871\u28c9\u2871", "\u28c9\u288e\u28c9\u288e", "\u2871\u28c9\u2871\u28c9", "\u288e\u28c9\u288e\u28c9", "\u28c9\u2871\u28c9\u2871", "\u28c9\u288e\u28c9\u288e", "\u2871\u28c9\u2871\u28c9", "\u288e\u28c9\u288e\u28c9", "\u28c9\u2871\u28c9\u2871", "\u28c9\u288e\u28c9\u288e", "\u2871\u28c9\u2871\u28c9"], interval: 80 },
-  "fillsweep": { frames: ["\u28c0\u28c0", "\u28e4\u28e4", "\u28f6\u28f6", "\u28ff\u28ff", "\u28ff\u28ff", "\u28ff\u28ff", "\u28f6\u28f6", "\u28e4\u28e4", "\u28c0\u28c0", "\u2800\u2800", "\u2800\u2800"], interval: 100 },
-  "diagswipe": { frames: ["\u2801\u2800", "\u280b\u2800", "\u281f\u2801", "\u287f\u280b", "\u28ff\u281f", "\u28ff\u287f", "\u28ff\u28ff", "\u28ff\u28ff", "\u28fe\u28ff", "\u28f4\u28ff", "\u28e0\u28fe", "\u2880\u28f4", "\u2800\u28e0", "\u2800\u2880", "\u2800\u2800", "\u2800\u2800"], interval: 60 }
+  "braille": { frames: ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"], interval: 80 },
+  "braillewave": { frames: ["⠁⠂⠄⡀", "⠂⠄⡀⢀", "⠄⡀⢀⠠", "⡀⢀⠠⠐", "⢀⠠⠐⠈", "⠠⠐⠈⠁", "⠐⠈⠁⠂", "⠈⠁⠂⠄"], interval: 100 },
+  "dna": { frames: ["⠋⠉⠙⠚", "⠉⠙⠚⠒", "⠙⠚⠒⠂", "⠚⠒⠂⠂", "⠒⠂⠂⠒", "⠂⠂⠒⠲", "⠂⠒⠲⠴", "⠒⠲⠴⠤", "⠲⠴⠤⠄", "⠴⠤⠄⠋", "⠤⠄⠋⠉", "⠄⠋⠉⠙"], interval: 80 },
+  "scan": { frames: ["⠀⠀⠀⠀", "⡇⠀⠀⠀", "⣿⠀⠀⠀", "⢸⡇⠀⠀", "⠀⣿⠀⠀", "⠀⢸⡇⠀", "⠀⠀⣿⠀", "⠀⠀⢸⡇", "⠀⠀⠀⣿", "⠀⠀⠀⢸"], interval: 70 },
+  "rain": { frames: ["⢁⠂⠔⠈", "⠂⠌⡠⠐", "⠄⡐⢀⠡", "⡈⠠⠀⢂", "⠐⢀⠁⠄", "⠠⠁⠊⡀", "⢁⠂⠔⠈", "⠂⠌⡠⠐", "⠄⡐⢀⠡", "⡈⠠⠀⢂", "⠐⢀⠁⠄", "⠠⠁⠊⡀"], interval: 100 },
+  "scanline": { frames: ["⠉⠉⠉", "⠓⠓⠓", "⠦⠦⠦", "⣄⣄⣄", "⠦⠦⠦", "⠓⠓⠓"], interval: 120 },
+  "pulse": { frames: ["⠀⠶⠀", "⠰⣿⠆", "⢾⣉⡷", "⣏⠀⣹", "⡁⠀⢈"], interval: 180 },
+  "snake": { frames: ["⣁⡀", "⣉⠀", "⡉⠁", "⠉⠉", "⠈⠙", "⠀⠛", "⠐⠚", "⠒⠒", "⠖⠂", "⠶⠀", "⠦⠄", "⠤⠤", "⠠⢤", "⠀⣤", "⢀⣠", "⣀⣀"], interval: 80 },
+  "sparkle": { frames: ["⡡⠊⢔⠡", "⠊⡰⡡⡘", "⢔⢅⠈⢢", "⡁⢂⠆⡍", "⢔⠨⢑⢐", "⠨⡑⡠⠊"], interval: 150 },
+  "cascade": { frames: ["⠀⠀⠀⠀", "⠀⠀⠀⠀", "⠁⠀⠀⠀", "⠋⠀⠀⠀", "⠞⠁⠀⠀", "⡴⠋⠀⠀", "⣠⠞⠁⠀", "⢀⡴⠋⠀", "⠀⣠⠞⠁", "⠀⢀⡴⠋", "⠀⠀⣠⠞", "⠀⠀⢀⡴", "⠀⠀⠀⣠", "⠀⠀⠀⢀"], interval: 60 },
+  "columns": { frames: ["⡀⠀⠀", "⡄⠀⠀", "⡆⠀⠀", "⡇⠀⠀", "⣇⠀⠀", "⣧⠀⠀", "⣷⠀⠀", "⣿⠀⠀", "⣿⡀⠀", "⣿⡄⠀", "⣿⡆⠀", "⣿⡇⠀", "⣿⣇⠀", "⣿⣧⠀", "⣿⣷⠀", "⣿⣿⠀", "⣿⣿⡀", "⣿⣿⡄", "⣿⣿⡆", "⣿⣿⡇", "⣿⣿⣇", "⣿⣿⣧", "⣿⣿⣷", "⣿⣿⣿", "⣿⣿⣿", "⠀⠀⠀"], interval: 60 },
+  "orbit": { frames: ["⠃", "⠉", "⠘", "⠰", "⢠", "⣀", "⡄", "⠆"], interval: 100 },
+  "breathe": { frames: ["⠀", "⠂", "⠌", "⡑", "⢕", "⢝", "⣫", "⣟", "⣿", "⣟", "⣫", "⢝", "⢕", "⡑", "⠌", "⠂", "⠀"], interval: 100 },
+  "waverows": { frames: ["⠖⠉⠉⠑", "⡠⠖⠉⠉", "⣠⡠⠖⠉", "⣄⣠⡠⠖", "⠢⣄⣠⡠", "⠙⠢⣄⣠", "⠉⠙⠢⣄", "⠊⠉⠙⠢", "⠜⠊⠉⠙", "⡤⠜⠊⠉", "⣀⡤⠜⠊", "⢤⣀⡤⠜", "⠣⢤⣀⡤", "⠑⠣⢤⣀", "⠉⠑⠣⢤", "⠋⠉⠑⠣"], interval: 90 },
+  "checkerboard": { frames: ["⢕⢕⢕", "⡪⡪⡪", "⢊⠔⡡", "⡡⢊⠔"], interval: 250 },
+  "helix": { frames: ["⢌⣉⢎⣉", "⣉⡱⣉⡱", "⣉⢎⣉⢎", "⡱⣉⡱⣉", "⢎⣉⢎⣉", "⣉⡱⣉⡱", "⣉⢎⣉⢎", "⡱⣉⡱⣉", "⢎⣉⢎⣉", "⣉⡱⣉⡱", "⣉⢎⣉⢎", "⡱⣉⡱⣉", "⢎⣉⢎⣉", "⣉⡱⣉⡱", "⣉⢎⣉⢎", "⡱⣉⡱⣉"], interval: 80 },
+  "fillsweep": { frames: ["⣀⣀", "⣤⣤", "⣶⣶", "⣿⣿", "⣿⣿", "⣿⣿", "⣶⣶", "⣤⣤", "⣀⣀", "⠀⠀", "⠀⠀"], interval: 100 },
+  "diagswipe": { frames: ["⠁⠀", "⠋⠀", "⠟⠁", "⡿⠋", "⣿⠟", "⣿⡿", "⣿⣿", "⣿⣿", "⣾⣿", "⣴⣿", "⣠⣾", "⢀⣴", "⠀⣠", "⠀⢀", "⠀⠀", "⠀⠀"], interval: 60 }
 };
-
+const NATIVE_LOADERS = {
+  "Circle": { css: `.circle-loader { width: 44px; height: 44px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }`, html: `<div class="circle-loader"></div>` },
+  "Dots": { css: `.dots-loader { display: flex; gap: 6px; align-items: center; }
+.dots-loader span { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: dot-bounce 0.6s ease-in-out infinite alternate; }
+.dots-loader span:nth-child(2) { animation-delay: 0.2s; }
+.dots-loader span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dot-bounce { to { transform: translateY(-12px); } }`, html: `<div class="dots-loader"><span></span><span></span><span></span></div>` },
+  "Bars": { css: `.bars-loader { display: flex; gap: 2px; align-items: center; height: 28px; }
+.bars-loader span { width: 4px; height: 6px; background: var(--accent); border-radius: 2px; animation: bar-grow 0.4s ease-in-out infinite alternate; }
+.bars-loader span:nth-child(2) { animation-delay: 0.1s; }
+.bars-loader span:nth-child(3) { animation-delay: 0.2s; }
+.bars-loader span:nth-child(4) { animation-delay: 0.3s; }
+.bars-loader span:nth-child(5) { animation-delay: 0.4s; }
+@keyframes bar-grow { to { height: 28px; } }`, html: `<div class="bars-loader"><span></span><span></span><span></span><span></span><span></span></div>` },
+  "Orbit": { css: `.orbit-loader { width: 44px; height: 44px; position: relative; }
+.orbit-loader::before { content: ""; position: absolute; inset: 0; border: 1.5px solid var(--border); border-radius: 50%; }
+.orbit-loader::after { content: ""; position: absolute; top: 50%; left: 50%; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; margin: -3px 0 0 -3px; transform-origin: -19px center; animation: orbit-spin 1s linear infinite; }
+@keyframes orbit-spin { to { transform: rotate(360deg); } }`, html: `<div class="orbit-loader"></div>` },
+  "Pulse": { css: `.pulse-loader { width: 40px; height: 40px; position: relative; display: flex; align-items: center; justify-content: center; }
+.pulse-loader::before { content: ""; position: absolute; inset: 0; border: 2px solid var(--accent); border-radius: 50%; opacity: 0; animation: pulse-ring 1s ease-out infinite; }
+.pulse-loader::after { content: ""; width: 12px; height: 12px; background: var(--accent); border-radius: 50%; }
+@keyframes pulse-ring { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }`, html: `<div class="pulse-loader"></div>` },
+  "Wave": { css: `.wave-loader { width: 60px; height: 20px; overflow: hidden; }
+.wave-loader svg { width: 100%; height: 100%; }
+.wave-loader path { stroke: var(--accent); stroke-width: 2; fill: none; animation: wave-shift 0.03s linear infinite; }`, html: `<div class="wave-loader"><svg viewBox="0 0 60 20" preserveAspectRatio="none"><path d="M0,10 Q15,0 30,10 T60,10" /></svg></div>` },
+  "Gradient Ring": { css: `.gradient-ring { width: 44px; height: 44px; border-radius: 50%; background: conic-gradient(#5b9dd9, #c586c0, #d16969, #5b9dd9); -webkit-mask: radial-gradient(circle at center, transparent 55%, black 56%); mask: radial-gradient(circle at center, transparent 55%, black 56%); animation: spin 1s linear infinite; }`, html: `<div class="gradient-ring"></div>` },
+  "Grid Flip": { css: `.grid-flip { display: grid; grid-template-columns: repeat(2, 10px); gap: 3px; }
+.grid-flip span { width: 10px; height: 10px; background: var(--accent); border-radius: 2px; animation: grid-flip-anim 0.5s ease-in-out infinite alternate; }
+.grid-flip span:nth-child(1) { animation-delay: 0s; }
+.grid-flip span:nth-child(2) { animation-delay: 0.12s; }
+.grid-flip span:nth-child(3) { animation-delay: 0.24s; }
+.grid-flip span:nth-child(4) { animation-delay: 0.36s; }
+@keyframes grid-flip-anim { to { transform: rotate(180deg) scale(0.8); } }`, html: `<div class="grid-flip"><span></span><span></span><span></span><span></span></div>` },
+  "Infinity": { css: `.infinity-loader { width: 44px; height: 22px; }
+.infinity-loader svg { width: 100%; height: 100%; }
+.infinity-loader path { stroke: var(--accent); stroke-width: 2; fill: none; stroke-dasharray: 100; stroke-dashoffset: 100; animation: infinity-draw 1.2s ease-in-out infinite alternate; }
+@keyframes infinity-draw { to { stroke-dashoffset: 0; } }`, html: `<div class="infinity-loader"><svg viewBox="0 0 44 22"><path d="M11,11 C11,6 6,6 6,11 C6,16 11,16 11,11 C11,6 6,6 6,11 M11,11 C11,6 16,6 16,11 C16,16 11,16 11,11 C11,6 16,6 16,11" /></svg></div>` }
+};
 const HERMES_THINK = ["helix", "breathe", "orbit", "dna", "waverows", "snake", "pulse"];
 const HERMES_TOOL = ["cascade", "scan", "diagswipe", "fillsweep", "rain", "columns", "sparkle"];
 
-function getCategory(name) {
+function getUnicodeCategory(name) {
   if (HERMES_THINK.includes(name)) return 'think';
   if (HERMES_TOOL.includes(name)) return 'tool';
   return 'other';
 }
 
+let currentTab = 'unicode';
+let spinnerIntervals = [];
+
+function clearIntervals() {
+  spinnerIntervals.forEach(id => clearInterval(id));
+  spinnerIntervals = [];
+}
+
 function buildCards() {
+  clearIntervals();
   const grid = document.getElementById('grid');
   const search = document.getElementById('search').value.toLowerCase();
   const filter = document.getElementById('filter').value;
   const showPreview = document.getElementById('showPreview').checked;
+  const dynCss = document.getElementById('dynamicCss');
 
   grid.innerHTML = '';
-  const entries = Object.entries(SPINNERS).filter(([name]) => {
-    if (!name.includes(search)) return false;
+  dynCss.innerHTML = '';
+
+  // Collect items based on tab
+  let items = [];
+
+  if (currentTab === 'unicode' || currentTab === 'all') {
+    for (const [name, info] of Object.entries(SPINNERS)) {
+      const cat = getUnicodeCategory(name);
+      items.push({ name, type: 'unicode', cat, info });
+    }
+  }
+
+  if (currentTab === 'native' || currentTab === 'all') {
+    for (const [name, info] of Object.entries(NATIVE_LOADERS)) {
+      items.push({ name, type: 'native', cat: 'native', info });
+    }
+  }
+
+  // Filter
+  items = items.filter(item => {
+    if (!item.name.toLowerCase().includes(search)) return false;
     if (filter === 'all') return true;
-    return getCategory(name) === filter;
+    return item.cat === filter;
   });
 
-  for (const [name, info] of entries) {
-    const cat = getCategory(name);
+  // Render
+  for (const item of items) {
     const card = document.createElement('div');
     card.className = 'card';
 
     let badges = '';
-    if (cat === 'think') badges = '<span class="badge badge-think">thinking</span>';
-    else if (cat === 'tool') badges = '<span class="badge badge-tool">tool</span>';
+    if (item.cat === 'think') badges = '<span class="badge badge-think">thinking</span>';
+    else if (item.cat === 'tool') badges = '<span class="badge badge-tool">tool</span>';
+    else if (item.cat === 'native') badges = '<span class="badge badge-native">native</span>';
 
-    card.innerHTML = `
-      <div class="card-header">
-        <span class="card-name">${name}</span>
-        <div class="card-badges">${badges}</div>
-      </div>
-      <div class="spinner-display" data-spinner="${name}"></div>
-      <div class="card-meta">
-        <span>${info.frames.length} frames</span>
-        <span>${info.interval}ms</span>
-      </div>
-      ${showPreview ? `<div class="preview-line" data-preview="${name}"><span class="spinner-inline"></span> Generating assets...</div>` : ''}
-    `;
+    if (item.type === 'unicode') {
+      const info = item.info;
+      card.innerHTML = `
+        <div class="card-header">
+          <span class="card-name">${item.name}</span>
+          <div class="card-badges">${badges}</div>
+        </div>
+        <div class="spinner-display" data-spinner="${item.name}"></div>
+        <div class="card-meta">
+          <span>${info.frames.length} frames</span>
+          <span>${info.interval}ms</span>
+        </div>
+        ${showPreview ? `<div class="preview-line" data-preview="${item.name}"><span class="spinner-inline"></span> Generating assets...</div>` : ''}
+      `;
+      grid.appendChild(card);
 
-    grid.appendChild(card);
-  }
+      // Start animation
+      let frame = 0;
+      const display = card.querySelector('[data-spinner]');
+      const preview = card.querySelector('[data-preview] .spinner-inline');
+      const id = setInterval(() => {
+        const f = info.frames[frame % info.frames.length];
+        if (display) display.textContent = f;
+        if (preview) preview.textContent = f;
+        frame++;
+      }, info.interval);
+      spinnerIntervals.push(id);
 
-  // Start animation loops
-  for (const [name, info] of entries) {
-    const display = grid.querySelector(`[data-spinner="${name}"]`);
-    const preview = grid.querySelector(`[data-preview="${name}"] .spinner-inline`);
+    } else if (item.type === 'native') {
+      const info = item.info;
+      // Inject CSS (dedupe by using a class prefix)
+      const cssClassName = item.name.toLowerCase().replace(/\s+/g, '-');
+      dynCss.innerHTML += info.css;
 
-    let frame = 0;
-    setInterval(() => {
-      const f = info.frames[frame % info.frames.length];
-      if (display) display.textContent = f;
-      if (preview) preview.textContent = f;
-      frame++;
-    }, info.interval);
+      card.innerHTML = `
+        <div class="card-header">
+          <span class="card-name">${item.name}</span>
+          <div class="card-badges">${badges}</div>
+        </div>
+        <div class="spinner-display">${info.html}</div>
+        <div class="card-meta">
+          <span>native SwiftUI</span>
+          <span>CSS equiv.</span>
+        </div>
+        ${showPreview ? `<div class="preview-line"><span style="color:var(--accent)">${info.html}</span> Generating assets...</div>` : ''}
+      `;
+      grid.appendChild(card);
+    }
   }
 }
+
+// Tab switching
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentTab = tab.dataset.tab;
+    // Reset filter when switching tabs
+    if (currentTab === 'native') {
+      document.getElementById('filter').value = 'native';
+    } else if (currentTab === 'unicode') {
+      document.getElementById('filter').value = 'all';
+    }
+    buildCards();
+  });
+});
 
 document.getElementById('search').addEventListener('input', buildCards);
 document.getElementById('filter').addEventListener('change', buildCards);
 document.getElementById('showPreview').addEventListener('change', buildCards);
 buildCards();
+
+// Update count
+document.getElementById('totalCount').textContent = Object.keys(SPINNERS).length + Object.keys(NATIVE_LOADERS).length;
 </script>
 </body>
 </html>
