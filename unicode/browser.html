@@ -6,164 +6,60 @@
 <title>Animation Library Browser</title>
 <style>
   :root {
-    --bg: #1a1a1a;
-    --panel: #242424;
-    --border: #333;
-    --text: #d4d4d4;
-    --muted: #777;
-    --accent: #5b9dd9;
-    --hermes-think: #c586c0;
-    --hermes-tool: #569cd6;
-    --hover: #2a2a2a;
+    --bg: #1a1a1a; --panel: #242424; --border: #333; --text: #d4d4d4;
+    --muted: #777; --accent: #5b9dd9; --hermes-think: #c586c0; --hermes-tool: #569cd6;
+    --hover: #2a2a2a; --rb-text: #c586c0; --rb-anim: #569cd6; --rb-comp: #b5cea8; --rb-bg: #dcdcaa;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-    font-size: 14px;
-    min-height: 100vh;
-    padding: 24px;
-  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 14px; min-height: 100vh; padding: 24px; }
   h1 { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
   .sub { color: var(--muted); font-size: 12px; margin-bottom: 20px; }
   .sub a { color: var(--accent); }
-  .tabs {
-    display: flex;
-    gap: 0;
-    margin-bottom: 20px;
-    border-bottom: 1px solid var(--border);
-  }
-  .tab {
-    padding: 8px 16px;
-    cursor: pointer;
-    border: none;
-    background: none;
-    color: var(--muted);
-    font-size: 13px;
-    font-weight: 500;
-    border-bottom: 2px solid transparent;
-    transition: color 0.1s, border-color 0.1s;
-  }
+  .tabs { display: flex; gap: 0; margin-bottom: 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  .tab { padding: 8px 16px; cursor: pointer; border: none; background: none; color: var(--muted); font-size: 13px; font-weight: 500; border-bottom: 2px solid transparent; transition: color 0.1s, border-color 0.1s; white-space: nowrap; }
   .tab:hover { color: var(--text); }
   .tab.active { color: var(--text); border-bottom-color: var(--accent); }
-  .tab-count {
-    font-size: 10px;
-    background: var(--border);
-    padding: 1px 5px;
-    border-radius: 8px;
-    margin-left: 6px;
-  }
-  .controls {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .controls input[type="text"] {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 6px 10px;
-    border-radius: 3px;
-    font-size: 13px;
-    width: 200px;
-    outline: none;
-  }
+  .tab-count { font-size: 10px; background: var(--border); padding: 1px 5px; border-radius: 8px; margin-left: 6px; }
+  .controls { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+  .controls input[type="text"] { background: var(--panel); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: 3px; font-size: 13px; width: 200px; outline: none; }
   .controls input:focus { border-color: var(--accent); }
-  .controls select {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 6px 10px;
-    border-radius: 3px;
-    font-size: 13px;
-    cursor: pointer;
-  }
-  .controls label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: var(--muted);
-    cursor: pointer;
-  }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-  }
-  .card {
-    background: var(--panel);
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    transition: background 0.1s;
-  }
+  .controls select { background: var(--panel); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: 3px; font-size: 13px; cursor: pointer; }
+  .controls label { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); cursor: pointer; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .card { background: var(--panel); padding: 16px; display: flex; flex-direction: column; gap: 8px; transition: background 0.1s; }
   .card:hover { background: var(--hover); }
   .card-header { display: flex; align-items: center; justify-content: space-between; }
   .card-name { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; font-weight: 600; }
   .card-badges { display: flex; gap: 4px; }
-  .badge {
-    font-size: 9px;
-    padding: 2px 6px;
-    border-radius: 2px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 600;
-  }
+  .badge { font-size: 9px; padding: 2px 6px; border-radius: 2px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
   .badge-think { background: rgba(197,134,192,0.2); color: var(--hermes-think); }
   .badge-tool { background: rgba(86,156,214,0.2); color: var(--hermes-tool); }
-  .badge-native { background: rgba(181,206,168,0.2); color: #b5cea8; }
-  .spinner-display {
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 28px;
-    line-height: 1;
-    min-height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #1a1a1a;
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    padding: 8px;
-    color: var(--accent);
-  }
-  .card-meta {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: var(--muted);
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  }
-  .preview-line {
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 12px;
-    color: var(--text);
-    min-height: 18px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+  .badge-native { background: rgba(181,206,168,0.2); color: var(--rb-comp); }
+  .badge-rb { background: rgba(220,220,170,0.15); color: var(--rb-bg); }
+  .spinner-display { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 28px; line-height: 1; min-height: 60px; display: flex; align-items: center; justify-content: center; background: #1a1a1a; border: 1px solid var(--border); border-radius: 3px; padding: 8px; color: var(--accent); }
+  .card-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .card-desc { font-size: 11px; color: var(--muted); line-height: 1.3; min-height: 14px; }
+  .preview-line { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--text); min-height: 18px; display: flex; align-items: center; gap: 6px; }
   .preview-line .spinner-inline { color: var(--accent); }
-  .hidden { display: none !important; }
+  .rb-link { color: var(--accent); text-decoration: none; font-size: 11px; }
+  .rb-link:hover { text-decoration: underline; }
+  .section-header { font-size: 12px; font-weight: 600; color: var(--text); padding: 12px 16px 8px; background: var(--panel); border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: 0.5px; }
+  .rb-note { padding: 12px 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 4px; margin-bottom: 12px; font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .rb-note a { color: var(--accent); }
 </style>
 </head>
 <body>
   <h1>Animation Library Browser</h1>
   <div class="sub">
-    <span id="totalCount"></span> animations across unicode spinners and native SwiftUI loaders.
+    <span id="totalCount"></span> animations — unicode spinners, native SwiftUI loaders, and React Bits components.
     <a href="https://github.com/pkidwell22/animation-library" style="color:var(--accent)">View repo →</a>
   </div>
 
   <div class="tabs">
     <button class="tab active" data-tab="unicode">Unicode Spinners <span class="tab-count">18</span></button>
     <button class="tab" data-tab="native">Native Loaders <span class="tab-count">9</span></button>
-    <button class="tab" data-tab="all">All <span class="tab-count">27</span></button>
+    <button class="tab" data-tab="reactbits">React Bits <span class="tab-count">134</span></button>
+    <button class="tab" data-tab="all">All <span class="tab-count">161</span></button>
   </div>
 
   <div class="controls">
@@ -173,14 +69,18 @@
       <option value="think">Hermes: thinking</option>
       <option value="tool">Hermes: tool</option>
       <option value="native">Native</option>
+      <option value="TextAnimations">React Bits: Text</option>
+      <option value="Animations">React Bits: Animations</option>
+      <option value="Components">React Bits: Components</option>
+      <option value="Backgrounds">React Bits: Backgrounds</option>
       <option value="other">Other</option>
     </select>
     <label><input type="checkbox" id="showPreview" checked> Inline preview</label>
   </div>
 
   <div class="grid" id="grid"></div>
+  <div id="rbNote"></div>
 
-<!-- Dynamic CSS injection container -->
 <style id="dynamicCss"></style>
 
 <script>
@@ -205,46 +105,21 @@ const SPINNERS = {
   "diagswipe": { frames: ["⠁⠀", "⠋⠀", "⠟⠁", "⡿⠋", "⣿⠟", "⣿⡿", "⣿⣿", "⣿⣿", "⣾⣿", "⣴⣿", "⣠⣾", "⢀⣴", "⠀⣠", "⠀⢀", "⠀⠀", "⠀⠀"], interval: 60 }
 };
 const NATIVE_LOADERS = {
-  "Circle": { css: `.circle-loader { width: 44px; height: 44px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }`, html: `<div class="circle-loader"></div>` },
-  "Dots": { css: `.dots-loader { display: flex; gap: 6px; align-items: center; }
-.dots-loader span { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: dot-bounce 0.6s ease-in-out infinite alternate; }
-.dots-loader span:nth-child(2) { animation-delay: 0.2s; }
-.dots-loader span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes dot-bounce { to { transform: translateY(-12px); } }`, html: `<div class="dots-loader"><span></span><span></span><span></span></div>` },
-  "Bars": { css: `.bars-loader { display: flex; gap: 2px; align-items: center; height: 28px; }
-.bars-loader span { width: 4px; height: 6px; background: var(--accent); border-radius: 2px; animation: bar-grow 0.4s ease-in-out infinite alternate; }
-.bars-loader span:nth-child(2) { animation-delay: 0.1s; }
-.bars-loader span:nth-child(3) { animation-delay: 0.2s; }
-.bars-loader span:nth-child(4) { animation-delay: 0.3s; }
-.bars-loader span:nth-child(5) { animation-delay: 0.4s; }
-@keyframes bar-grow { to { height: 28px; } }`, html: `<div class="bars-loader"><span></span><span></span><span></span><span></span><span></span></div>` },
-  "Orbit": { css: `.orbit-loader { width: 44px; height: 44px; position: relative; }
-.orbit-loader::before { content: ""; position: absolute; inset: 0; border: 1.5px solid var(--border); border-radius: 50%; }
-.orbit-loader::after { content: ""; position: absolute; top: 50%; left: 50%; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; margin: -3px 0 0 -3px; transform-origin: -19px center; animation: orbit-spin 1s linear infinite; }
-@keyframes orbit-spin { to { transform: rotate(360deg); } }`, html: `<div class="orbit-loader"></div>` },
-  "Pulse": { css: `.pulse-loader { width: 40px; height: 40px; position: relative; display: flex; align-items: center; justify-content: center; }
-.pulse-loader::before { content: ""; position: absolute; inset: 0; border: 2px solid var(--accent); border-radius: 50%; opacity: 0; animation: pulse-ring 1s ease-out infinite; }
-.pulse-loader::after { content: ""; width: 12px; height: 12px; background: var(--accent); border-radius: 50%; }
-@keyframes pulse-ring { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }`, html: `<div class="pulse-loader"></div>` },
-  "Wave": { css: `.wave-loader { width: 60px; height: 20px; overflow: hidden; }
-.wave-loader svg { width: 100%; height: 100%; }
-.wave-loader path { stroke: var(--accent); stroke-width: 2; fill: none; animation: wave-shift 0.03s linear infinite; }`, html: `<div class="wave-loader"><svg viewBox="0 0 60 20" preserveAspectRatio="none"><path d="M0,10 Q15,0 30,10 T60,10" /></svg></div>` },
+  "Circle": { css: `.circle-loader { width: 44px; height: 44px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; } @keyframes spin { to { transform: rotate(360deg); } }`, html: `<div class="circle-loader"></div>` },
+  "Dots": { css: `.dots-loader { display: flex; gap: 6px; align-items: center; } .dots-loader span { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: dot-bounce 0.6s ease-in-out infinite alternate; } .dots-loader span:nth-child(2) { animation-delay: 0.2s; } .dots-loader span:nth-child(3) { animation-delay: 0.4s; } @keyframes dot-bounce { to { transform: translateY(-12px); } }`, html: `<div class="dots-loader"><span></span><span></span><span></span></div>` },
+  "Bars": { css: `.bars-loader { display: flex; gap: 2px; align-items: center; height: 28px; } .bars-loader span { width: 4px; height: 6px; background: var(--accent); border-radius: 2px; animation: bar-grow 0.4s ease-in-out infinite alternate; } .bars-loader span:nth-child(2) { animation-delay: 0.1s; } .bars-loader span:nth-child(3) { animation-delay: 0.2s; } .bars-loader span:nth-child(4) { animation-delay: 0.3s; } .bars-loader span:nth-child(5) { animation-delay: 0.4s; } @keyframes bar-grow { to { height: 28px; } }`, html: `<div class="bars-loader"><span></span><span></span><span></span><span></span><span></span></div>` },
+  "Orbit": { css: `.orbit-loader { width: 44px; height: 44px; position: relative; } .orbit-loader::before { content: ''; position: absolute; inset: 0; border: 1.5px solid var(--border); border-radius: 50%; } .orbit-loader::after { content: ''; position: absolute; top: 50%; left: 50%; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; margin: -3px 0 0 -3px; transform-origin: -19px center; animation: orbit-spin 1s linear infinite; } @keyframes orbit-spin { to { transform: rotate(360deg); } }`, html: `<div class="orbit-loader"></div>` },
+  "Pulse": { css: `.pulse-loader { width: 40px; height: 40px; position: relative; display: flex; align-items: center; justify-content: center; } .pulse-loader::before { content: ''; position: absolute; inset: 0; border: 2px solid var(--accent); border-radius: 50%; opacity: 0; animation: pulse-ring 1s ease-out infinite; } .pulse-loader::after { content: ''; width: 12px; height: 12px; background: var(--accent); border-radius: 50%; } @keyframes pulse-ring { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }`, html: `<div class="pulse-loader"></div>` },
+  "Wave": { css: `.wave-loader { width: 60px; height: 20px; } .wave-loader svg { width: 100%; height: 100%; } .wave-loader path { stroke: var(--accent); stroke-width: 2; fill: none; }`, html: `<div class="wave-loader"><svg viewBox="0 0 60 20"><path d="M0,10 Q15,0 30,10 T60,10" /></svg></div>` },
   "Gradient Ring": { css: `.gradient-ring { width: 44px; height: 44px; border-radius: 50%; background: conic-gradient(#5b9dd9, #c586c0, #d16969, #5b9dd9); -webkit-mask: radial-gradient(circle at center, transparent 55%, black 56%); mask: radial-gradient(circle at center, transparent 55%, black 56%); animation: spin 1s linear infinite; }`, html: `<div class="gradient-ring"></div>` },
-  "Grid Flip": { css: `.grid-flip { display: grid; grid-template-columns: repeat(2, 10px); gap: 3px; }
-.grid-flip span { width: 10px; height: 10px; background: var(--accent); border-radius: 2px; animation: grid-flip-anim 0.5s ease-in-out infinite alternate; }
-.grid-flip span:nth-child(1) { animation-delay: 0s; }
-.grid-flip span:nth-child(2) { animation-delay: 0.12s; }
-.grid-flip span:nth-child(3) { animation-delay: 0.24s; }
-.grid-flip span:nth-child(4) { animation-delay: 0.36s; }
-@keyframes grid-flip-anim { to { transform: rotate(180deg) scale(0.8); } }`, html: `<div class="grid-flip"><span></span><span></span><span></span><span></span></div>` },
-  "Infinity": { css: `.infinity-loader { width: 44px; height: 22px; }
-.infinity-loader svg { width: 100%; height: 100%; }
-.infinity-loader path { stroke: var(--accent); stroke-width: 2; fill: none; stroke-dasharray: 100; stroke-dashoffset: 100; animation: infinity-draw 1.2s ease-in-out infinite alternate; }
-@keyframes infinity-draw { to { stroke-dashoffset: 0; } }`, html: `<div class="infinity-loader"><svg viewBox="0 0 44 22"><path d="M11,11 C11,6 6,6 6,11 C6,16 11,16 11,11 C11,6 6,6 6,11 M11,11 C11,6 16,6 16,11 C16,16 11,16 11,11 C11,6 16,6 16,11" /></svg></div>` }
+  "Grid Flip": { css: `.grid-flip { display: grid; grid-template-columns: repeat(2, 10px); gap: 3px; } .grid-flip span { width: 10px; height: 10px; background: var(--accent); border-radius: 2px; animation: grid-flip-anim 0.5s ease-in-out infinite alternate; } .grid-flip span:nth-child(1) { animation-delay: 0s; } .grid-flip span:nth-child(2) { animation-delay: 0.12s; } .grid-flip span:nth-child(3) { animation-delay: 0.24s; } .grid-flip span:nth-child(4) { animation-delay: 0.36s; } @keyframes grid-flip-anim { to { transform: rotate(180deg) scale(0.8); } }`, html: `<div class="grid-flip"><span></span><span></span><span></span><span></span></div>` },
+  "Infinity": { css: `.infinity-loader { width: 44px; height: 22px; } .infinity-loader svg { width: 100%; height: 100%; } .infinity-loader path { stroke: var(--accent); stroke-width: 2; fill: none; stroke-dasharray: 100; stroke-dashoffset: 100; animation: infinity-draw 1.2s ease-in-out infinite alternate; } @keyframes infinity-draw { to { stroke-dashoffset: 0; } }`, html: `<div class="infinity-loader"><svg viewBox="0 0 44 22"><path d="M11,11 C11,6 6,6 6,11 C6,16 11,16 11,11 C11,6 6,6 6,11 M11,11 C11,6 16,6 16,11 C16,16 11,16 11,11 C11,6 16,6 16,11" /></svg></div>` }
 };
+const REACT_BITS = {"TextAnimations": [{"name": "ASCIIText", "desc": "Component ported and enhanced from https://codepen.io/JuanFuentes/pen/eYEeoyE"}, {"name": "BlurText", "desc": ""}, {"name": "CircularText", "desc": ""}, {"name": "CountUp", "desc": ""}, {"name": "CurvedLoop", "desc": ""}, {"name": "DecryptedText", "desc": ""}, {"name": "FallingText", "desc": ""}, {"name": "FuzzyText", "desc": ""}, {"name": "GlitchText", "desc": ""}, {"name": "GradientText", "desc": ""}, {"name": "RotatingText", "desc": ""}, {"name": "ScrambledText", "desc": ""}, {"name": "ScrollFloat", "desc": ""}, {"name": "ScrollReveal", "desc": ""}, {"name": "ScrollVelocity", "desc": ""}, {"name": "ShinyText", "desc": ""}, {"name": "Shuffle", "desc": ""}, {"name": "SplitText", "desc": ""}, {"name": "TextCursor", "desc": ""}, {"name": "TextPressure", "desc": "Component ported from https://codepen.io/JuanFuentes/full/rgXKGQ"}, {"name": "TextType", "desc": ""}, {"name": "TrueFocus", "desc": ""}, {"name": "VariableProximity", "desc": ""}], "Backgrounds": [{"name": "Aurora", "desc": ""}, {"name": "Balatro", "desc": ""}, {"name": "Ballpit", "desc": ""}, {"name": "Beams", "desc": ""}, {"name": "ColorBends", "desc": ""}, {"name": "DarkVeil", "desc": ""}, {"name": "Dither", "desc": ""}, {"name": "DotField", "desc": ""}, {"name": "DotGrid", "desc": ""}, {"name": "EvilEye", "desc": ""}, {"name": "FaultyTerminal", "desc": ""}, {"name": "Ferrofluid", "desc": ""}, {"name": "FloatingLines", "desc": ""}, {"name": "Galaxy", "desc": ""}, {"name": "GradientBlinds", "desc": ""}, {"name": "Grainient", "desc": ""}, {"name": "GridDistortion", "desc": ""}, {"name": "GridMotion", "desc": ""}, {"name": "GridScan", "desc": ""}, {"name": "Hyperspeed", "desc": ""}, {"name": "Iridescence", "desc": ""}, {"name": "LetterGlitch", "desc": ""}, {"name": "LightPillar", "desc": ""}, {"name": "LightRays", "desc": ""}, {"name": "Lightfall", "desc": ""}, {"name": "Lightning", "desc": ""}, {"name": "LineWaves", "desc": ""}, {"name": "LiquidChrome", "desc": ""}, {"name": "LiquidEther", "desc": ""}, {"name": "Orb", "desc": ""}, {"name": "Particles", "desc": ""}, {"name": "PixelBlast", "desc": ""}, {"name": "PixelSnow", "desc": ""}, {"name": "Plasma", "desc": ""}, {"name": "PlasmaWave", "desc": ""}, {"name": "Prism", "desc": ""}, {"name": "PrismaticBurst", "desc": ""}, {"name": "Radar", "desc": ""}, {"name": "RippleGrid", "desc": ""}, {"name": "ShapeGrid", "desc": ""}, {"name": "SideRays", "desc": ""}, {"name": "Silk", "desc": ""}, {"name": "SoftAurora", "desc": ""}, {"name": "Threads", "desc": ""}, {"name": "Waves", "desc": ""}], "Components": [{"name": "AnimatedList", "desc": ""}, {"name": "BorderGlow", "desc": ""}, {"name": "BounceCards", "desc": ""}, {"name": "BubbleMenu", "desc": ""}, {"name": "CardNav", "desc": "use your own icon import if react-icons is not available"}, {"name": "CardSwap", "desc": ""}, {"name": "Carousel", "desc": "replace icons with your own if needed"}, {"name": "ChromaGrid", "desc": ""}, {"name": "CircularGallery", "desc": "Figtree is not guaranteed to be available on the host page, so the component"}, {"name": "Counter", "desc": ""}, {"name": "DecayCard", "desc": ""}, {"name": "Dock", "desc": ""}, {"name": "DomeGallery", "desc": ""}, {"name": "ElasticSlider", "desc": ""}, {"name": "FlowingMenu", "desc": ""}, {"name": "FluidGlass", "desc": ""}, {"name": "FlyingPosters", "desc": ""}, {"name": "Folder", "desc": ""}, {"name": "GlassIcons", "desc": ""}, {"name": "GlassSurface", "desc": ""}, {"name": "GooeyNav", "desc": ""}, {"name": "InfiniteMenu", "desc": ""}, {"name": "Lanyard", "desc": "replace with your own imports, see the usage snippet for details"}, {"name": "MagicBento", "desc": ""}, {"name": "Masonry", "desc": ""}, {"name": "ModelViewer", "desc": ""}, {"name": "PillNav", "desc": ""}, {"name": "PixelCard", "desc": ""}, {"name": "ProfileCard", "desc": ""}, {"name": "ReflectiveCard", "desc": ""}, {"name": "ScrollStack", "desc": ""}, {"name": "SpotlightCard", "desc": ""}, {"name": "Stack", "desc": ""}, {"name": "StaggeredMenu", "desc": ""}, {"name": "Stepper", "desc": ""}, {"name": "TiltedCard", "desc": ""}], "Animations": [{"name": "AnimatedContent", "desc": ""}, {"name": "Antigravity", "desc": ""}, {"name": "BlobCursor", "desc": ""}, {"name": "ClickSpark", "desc": ""}, {"name": "Crosshair", "desc": ""}, {"name": "Cubes", "desc": ""}, {"name": "ElectricBorder", "desc": ""}, {"name": "FadeContent", "desc": ""}, {"name": "GhostCursor", "desc": ""}, {"name": "GlareHover", "desc": ""}, {"name": "GradualBlur", "desc": ""}, {"name": "ImageTrail", "desc": ""}, {"name": "LaserFlow", "desc": ""}, {"name": "LogoLoop", "desc": ""}, {"name": "MagicRings", "desc": ""}, {"name": "Magnet", "desc": ""}, {"name": "MagnetLines", "desc": ""}, {"name": "MetaBalls", "desc": ""}, {"name": "MetallicPaint", "desc": ""}, {"name": "Noise", "desc": ""}, {"name": "OrbitImages", "desc": "Component created by Dominik Koch"}, {"name": "PixelTrail", "desc": ""}, {"name": "PixelTransition", "desc": ""}, {"name": "Ribbons", "desc": ""}, {"name": "ShapeBlur", "desc": ""}, {"name": "SplashCursor", "desc": ""}, {"name": "StarBorder", "desc": ""}, {"name": "StickerPeel", "desc": ""}, {"name": "Strands", "desc": ""}, {"name": "TargetCursor", "desc": "A position: fixed element is positioned relative to the viewport UNLESS an"}]};
 const HERMES_THINK = ["helix", "breathe", "orbit", "dna", "waverows", "snake", "pulse"];
 const HERMES_TOOL = ["cascade", "scan", "diagswipe", "fillsweep", "rain", "columns", "sparkle"];
+
+const RB_COLORS = { TextAnimations: "var(--rb-text)", Animations: "var(--rb-anim)", Components: "var(--rb-comp)", Backgrounds: "var(--rb-bg)" };
 
 function getUnicodeCategory(name) {
   if (HERMES_THINK.includes(name)) return 'think';
@@ -263,6 +138,7 @@ function clearIntervals() {
 function buildCards() {
   clearIntervals();
   const grid = document.getElementById('grid');
+  const rbNote = document.getElementById('rbNote');
   const search = document.getElementById('search').value.toLowerCase();
   const filter = document.getElementById('filter').value;
   const showPreview = document.getElementById('showPreview').checked;
@@ -270,8 +146,8 @@ function buildCards() {
 
   grid.innerHTML = '';
   dynCss.innerHTML = '';
+  rbNote.innerHTML = '';
 
-  // Collect items based on tab
   let items = [];
 
   if (currentTab === 'unicode' || currentTab === 'all') {
@@ -287,12 +163,25 @@ function buildCards() {
     }
   }
 
+  if (currentTab === 'reactbits' || currentTab === 'all') {
+    for (const [catName, comps] of Object.entries(REACT_BITS)) {
+      for (const comp of comps) {
+        items.push({ name: comp.name, type: 'reactbits', cat: catName, info: comp, desc: comp.desc || '' });
+      }
+    }
+  }
+
   // Filter
   items = items.filter(item => {
     if (!item.name.toLowerCase().includes(search)) return false;
     if (filter === 'all') return true;
     return item.cat === filter;
   });
+
+  // React Bits note
+  if (currentTab === 'reactbits') {
+    rbNote.innerHTML = `<div class="rb-note">React Bits components are React/TypeScript — browse and copy them at <a href="https://reactbits.dev" target="_blank">reactbits.dev</a>. Source: <a href="https://github.com/DavidHDev/react-bits" target="_blank">DavidHDev/react-bits</a> (MIT + Commons Clause). 4 variants per component: JS-CSS, JS-TW, TS-CSS, TS-TW.</div>`;
+  }
 
   // Render
   for (const item of items) {
@@ -303,24 +192,18 @@ function buildCards() {
     if (item.cat === 'think') badges = '<span class="badge badge-think">thinking</span>';
     else if (item.cat === 'tool') badges = '<span class="badge badge-tool">tool</span>';
     else if (item.cat === 'native') badges = '<span class="badge badge-native">native</span>';
+    else if (item.type === 'reactbits') badges = `<span class="badge badge-rb">${item.cat}</span>`;
 
     if (item.type === 'unicode') {
       const info = item.info;
       card.innerHTML = `
-        <div class="card-header">
-          <span class="card-name">${item.name}</span>
-          <div class="card-badges">${badges}</div>
-        </div>
+        <div class="card-header"><span class="card-name">${item.name}</span><div class="card-badges">${badges}</div></div>
         <div class="spinner-display" data-spinner="${item.name}"></div>
-        <div class="card-meta">
-          <span>${info.frames.length} frames</span>
-          <span>${info.interval}ms</span>
-        </div>
+        <div class="card-meta"><span>${info.frames.length} frames</span><span>${info.interval}ms</span></div>
         ${showPreview ? `<div class="preview-line" data-preview="${item.name}"><span class="spinner-inline"></span> Generating assets...</div>` : ''}
       `;
       grid.appendChild(card);
 
-      // Start animation
       let frame = 0;
       const display = card.querySelector('[data-spinner]');
       const preview = card.querySelector('[data-preview] .spinner-inline');
@@ -334,39 +217,44 @@ function buildCards() {
 
     } else if (item.type === 'native') {
       const info = item.info;
-      // Inject CSS (dedupe by using a class prefix)
-      const cssClassName = item.name.toLowerCase().replace(/\s+/g, '-');
       dynCss.innerHTML += info.css;
+      card.innerHTML = `
+        <div class="card-header"><span class="card-name">${item.name}</span><div class="card-badges">${badges}</div></div>
+        <div class="spinner-display">${info.html}</div>
+        <div class="card-meta"><span>native SwiftUI</span><span>CSS equiv.</span></div>
+        ${showPreview ? `<div class="preview-line"><span style="color:var(--accent)">${info.html}</span> Generating assets...</div>` : ''}
+      `;
+      grid.appendChild(card);
 
+    } else if (item.type === 'reactbits') {
+      const slug = item.name;
       card.innerHTML = `
         <div class="card-header">
           <span class="card-name">${item.name}</span>
           <div class="card-badges">${badges}</div>
         </div>
-        <div class="spinner-display">${info.html}</div>
+        <div class="card-desc">${item.desc || 'React component'}</div>
         <div class="card-meta">
-          <span>native SwiftUI</span>
-          <span>CSS equiv.</span>
+          <span>react + ts</span>
+          <a class="rb-link" href="https://reactbits.dev" target="_blank">view →</a>
         </div>
-        ${showPreview ? `<div class="preview-line"><span style="color:var(--accent)">${info.html}</span> Generating assets...</div>` : ''}
       `;
       grid.appendChild(card);
     }
   }
+
+  // Update count
+  document.getElementById('totalCount').textContent = items.length;
 }
 
-// Tab switching
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
     currentTab = tab.dataset.tab;
-    // Reset filter when switching tabs
-    if (currentTab === 'native') {
-      document.getElementById('filter').value = 'native';
-    } else if (currentTab === 'unicode') {
-      document.getElementById('filter').value = 'all';
-    }
+    if (currentTab === 'native') document.getElementById('filter').value = 'native';
+    else if (currentTab === 'reactbits') document.getElementById('filter').value = 'TextAnimations';
+    else document.getElementById('filter').value = 'all';
     buildCards();
   });
 });
@@ -375,9 +263,6 @@ document.getElementById('search').addEventListener('input', buildCards);
 document.getElementById('filter').addEventListener('change', buildCards);
 document.getElementById('showPreview').addEventListener('change', buildCards);
 buildCards();
-
-// Update count
-document.getElementById('totalCount').textContent = Object.keys(SPINNERS).length + Object.keys(NATIVE_LOADERS).length;
 </script>
 </body>
 </html>

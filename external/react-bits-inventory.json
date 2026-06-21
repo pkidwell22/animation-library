@@ -1,0 +1,685 @@
+{
+  "source": "https://github.com/DavidHDev/react-bits",
+  "source_url": "https://reactbits.dev",
+  "categories": {
+    "TextAnimations": [
+      {
+        "name": "ASCIIText",
+        "hasCss": false,
+        "desc": "Component ported and enhanced from https://codepen.io/JuanFuentes/pen/eYEeoyE"
+      },
+      {
+        "name": "BlurText",
+        "hasCss": false,
+        "desc": ""
+      },
+      {
+        "name": "CircularText",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "CountUp",
+        "hasCss": false,
+        "desc": ""
+      },
+      {
+        "name": "CurvedLoop",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "DecryptedText",
+        "hasCss": false,
+        "desc": ""
+      },
+      {
+        "name": "FallingText",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "FuzzyText",
+        "hasCss": false,
+        "desc": ""
+      },
+      {
+        "name": "GlitchText",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "GradientText",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "RotatingText",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "ScrambledText",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "ScrollFloat",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "ScrollReveal",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "ScrollVelocity",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "ShinyText",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Shuffle",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "SplitText",
+        "hasCss": false,
+        "desc": ""
+      },
+      {
+        "name": "TextCursor",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "TextPressure",
+        "hasCss": false,
+        "desc": "Component ported from https://codepen.io/JuanFuentes/full/rgXKGQ"
+      },
+      {
+        "name": "TextType",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "TrueFocus",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "VariableProximity",
+        "hasCss": true,
+        "desc": ""
+      }
+    ],
+    "Backgrounds": [
+      {
+        "name": "Aurora",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Balatro",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Ballpit",
+        "hasCss": false,
+        "desc": ""
+      },
+      {
+        "name": "Beams",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "ColorBends",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "DarkVeil",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Dither",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "DotField",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "DotGrid",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "EvilEye",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "FaultyTerminal",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Ferrofluid",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "FloatingLines",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Galaxy",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "GradientBlinds",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Grainient",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "GridDistortion",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "GridMotion",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "GridScan",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Hyperspeed",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Iridescence",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "LetterGlitch",
+        "hasCss": false,
+        "desc": ""
+      },
+      {
+        "name": "LightPillar",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "LightRays",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Lightfall",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Lightning",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "LineWaves",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "LiquidChrome",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "LiquidEther",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Orb",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Particles",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "PixelBlast",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "PixelSnow",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Plasma",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "PlasmaWave",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Prism",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "PrismaticBurst",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Radar",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "RippleGrid",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "ShapeGrid",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "SideRays",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Silk",
+        "hasCss": false,
+        "desc": ""
+      },
+      {
+        "name": "SoftAurora",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Threads",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Waves",
+        "hasCss": true,
+        "desc": ""
+      }
+    ],
+    "Components": [
+      {
+        "name": "AnimatedList",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "BorderGlow",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "BounceCards",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "BubbleMenu",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "CardNav",
+        "hasCss": true,
+        "desc": "use your own icon import if react-icons is not available"
+      },
+      {
+        "name": "CardSwap",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Carousel",
+        "hasCss": true,
+        "desc": "replace icons with your own if needed"
+      },
+      {
+        "name": "ChromaGrid",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "CircularGallery",
+        "hasCss": true,
+        "desc": "Figtree is not guaranteed to be available on the host page, so the component"
+      },
+      {
+        "name": "Counter",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "DecayCard",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Dock",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "DomeGallery",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "ElasticSlider",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "FlowingMenu",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "FluidGlass",
+        "hasCss": false,
+        "desc": ""
+      },
+      {
+        "name": "FlyingPosters",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Folder",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "GlassIcons",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "GlassSurface",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "GooeyNav",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "InfiniteMenu",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Lanyard",
+        "hasCss": true,
+        "desc": "replace with your own imports, see the usage snippet for details"
+      },
+      {
+        "name": "MagicBento",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Masonry",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "ModelViewer",
+        "hasCss": false,
+        "desc": ""
+      },
+      {
+        "name": "PillNav",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "PixelCard",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "ProfileCard",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "ReflectiveCard",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "ScrollStack",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "SpotlightCard",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Stack",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "StaggeredMenu",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Stepper",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "TiltedCard",
+        "hasCss": true,
+        "desc": ""
+      }
+    ],
+    "Animations": [
+      {
+        "name": "AnimatedContent",
+        "hasCss": false,
+        "desc": ""
+      },
+      {
+        "name": "Antigravity",
+        "hasCss": false,
+        "desc": ""
+      },
+      {
+        "name": "BlobCursor",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "ClickSpark",
+        "hasCss": false,
+        "desc": ""
+      },
+      {
+        "name": "Crosshair",
+        "hasCss": false,
+        "desc": ""
+      },
+      {
+        "name": "Cubes",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "ElectricBorder",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "FadeContent",
+        "hasCss": false,
+        "desc": ""
+      },
+      {
+        "name": "GhostCursor",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "GlareHover",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "GradualBlur",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "ImageTrail",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "LaserFlow",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "LogoLoop",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "MagicRings",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Magnet",
+        "hasCss": false,
+        "desc": ""
+      },
+      {
+        "name": "MagnetLines",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "MetaBalls",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "MetallicPaint",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Noise",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "OrbitImages",
+        "hasCss": true,
+        "desc": "Component created by Dominik Koch"
+      },
+      {
+        "name": "PixelTrail",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "PixelTransition",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Ribbons",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "ShapeBlur",
+        "hasCss": false,
+        "desc": ""
+      },
+      {
+        "name": "SplashCursor",
+        "hasCss": false,
+        "desc": ""
+      },
+      {
+        "name": "StarBorder",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "StickerPeel",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "Strands",
+        "hasCss": true,
+        "desc": ""
+      },
+      {
+        "name": "TargetCursor",
+        "hasCss": true,
+        "desc": "A position: fixed element is positioned relative to the viewport UNLESS an"
+      }
+    ]
+  },
+  "total": 134
+}
